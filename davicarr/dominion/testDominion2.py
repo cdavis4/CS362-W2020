@@ -4,27 +4,35 @@ Created on Tue Jan 15 15:42:42 2015
 
 @author: davicarr
 """
-#import Dominion file
+
+# import Dominion file
 import importlib
 
 Dominion = importlib.import_module('Dominion')
 if Dominion is None:
     print("can't find tbe Dominion module")
-#import Dominion
+
+testUtility = importlib.import_module('testUtility')
+if testUtility is None:
+    print("can't find tbe testUtility module")
+
 import random
 from collections import defaultdict
 
-#Get player names
-player_names = ["Annie","*Ben","*Carla"]
+# Get player names
+# player_names = ["Annie","*Ben","*Carla"]
+player_names = testUtility.getPlayerNames(testUtility.names)
 
-#number of curses and victory cards
-if len(player_names)>2:
-    nV=12
+# number of curses and victory cards
+if len(player_names) > 2:
+    nV = 12
 else:
-    nV=8
+    nV = 8
 nC = -10 + 10 * len(player_names)
 
-#Define box
+# Define box
+box = testUtility.getBoxes(testUtility.action_cards)
+"""
 box = {}
 box["Woodcutter"]=[Dominion.Woodcutter()]*10
 box["Smithy"]=[Dominion.Smithy()]*10
@@ -52,20 +60,28 @@ box["Spy"]=[Dominion.Spy()]*10
 box["Thief"]=[Dominion.Thief()]*10
 box["Throne Room"]=[Dominion.Throne_Room()]*10
 
+
 supply_order = {0:['Curse','Copper'],2:['Estate','Cellar','Chapel','Moat'],
                 3:['Silver','Chancellor','Village','Woodcutter','Workshop'],
                 4:['Gardens','Bureaucrat','Feast','Militia','Moneylender','Remodel','Smithy','Spy','Thief','Throne Room'],
                 5:['Duchy','Market','Council Room','Festival','Laboratory','Library','Mine','Witch'],
                 6:['Gold','Adventurer'],8:['Province']}
-
-#Pick 10 cards from box to be in the supply.
+"""
+# Pick 10 cards from box to be in the supply.
 boxlist = [k for k in box]
 random.shuffle(boxlist)
 random10 = boxlist[:10]
-supply = defaultdict(list,[(k,box[k]) for k in random10])
+supply = defaultdict(list, [(k, box[k]) for k in random10])
 
+# Create a supply order based on card cost
+supply_order = testUtility.getSupplyOrder(testUtility.supply_cards, testUtility.action_cards)
 
-#The supply always has these cards
+# The supply always has these cards
+base_supplies = testUtility.getSupplies(testUtility.supply_cards, nV, nC)
+for key in base_supplies:
+    value = base_supplies[key]
+    supply[key] = value
+"""
 supply["Copper"]=[Dominion.Copper()]*(60-len(player_names)*7)
 supply["Silver"]=[Dominion.Silver()]*40
 supply["Gold"]=[Dominion.Gold()]*30
@@ -73,52 +89,51 @@ supply["Estate"]=[Dominion.Estate()]*nV
 supply["Duchy"]=[Dominion.Duchy()]*nV
 supply["Province"]=[Dominion.Province()]*nV
 supply["Curse"]=[Dominion.Curse()]*nC
-
-#initialize the trash
+"""
+# initialize the trash
 trash = []
 
-#Costruct the Player objects
+# Costruct the Player objects
 players = []
 for name in player_names:
-    if name[0]=="*":
+    if name[0] == "*":
         players.append(Dominion.ComputerPlayer(name[1:]))
-    elif name[0]=="^":
+    elif name[0] == "^":
         players.append(Dominion.TablePlayer(name[1:]))
     else:
         players.append(Dominion.Player(name))
 
-#Play the game
-turn  = 0
+# Play the game
+turn = 0
 while not Dominion.gameover(supply):
-    turn += 1    
-    print("\r")    
+    turn += 1
+    print("\r")
     for value in supply_order:
-        print (value)
+        print(value)
         for stack in supply_order[value]:
             if stack in supply:
-                print (stack, len(supply[stack]))
+                print(stack, len(supply[stack]))
     print("\r")
     for player in players:
-        print (player.name,player.calcpoints())
-    print ("\rStart of turn " + str(turn))    
+        print(player.name, player.calcpoints())
+    print("\rStart of turn " + str(turn))
     for player in players:
         if not Dominion.gameover(supply):
             print("\r")
-            player.turn(players,supply,trash)
-            
+            player.turn(players, supply, trash)
 
-#Final score
-dcs=Dominion.cardsummaries(players)
-vp=dcs.loc['VICTORY POINTS']
-vpmax=vp.max()
-winners=[]
+# Final score
+dcs = Dominion.cardsummaries(players)
+vp = dcs.loc['VICTORY POINTS']
+vpmax = vp.max()
+winners = []
 for i in vp.index:
-    if vp.loc[i]==vpmax:
+    if vp.loc[i] == vpmax:
         winners.append(i)
-if len(winners)>1:
-    winstring= ' and '.join(winners) + ' win!'
+if len(winners) > 1:
+    winstring = ' and '.join(winners) + ' win!'
 else:
-    winstring = ' '.join([winners[0],'wins!'])
+    winstring = ' '.join([winners[0], 'wins!'])
 
-print("\nGAME OVER!!!\n"+winstring+"\n")
+print("\nGAME OVER!!!\n" + winstring + "\n")
 print(dcs)

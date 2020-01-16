@@ -11,12 +11,17 @@ import importlib
 Dominion = importlib.import_module('Dominion')
 if Dominion is None:
     print("can't find tbe Dominion module")
+    
+testUtility = importlib.import_module('testUtility')
+if testUtility is None:
+    print("can't find tbe testUtility module")
 
 import random
 from collections import defaultdict
 
 #Get player names
-player_names = ["Annie","*Ben","*Carla"]
+#player_names = ["Annie","*Ben","*Carla"] 
+player_names = testUtility.getPlayerNames(testUtility.names)
 
 #number of curses and victory cards
 if len(player_names)>2:
@@ -26,6 +31,8 @@ else:
 nC = -10 + 10 * len(player_names)
 
 #Define box
+box = testUtility.getBoxes(testUtility.action_cards)
+"""
 box = {}
 box["Woodcutter"]=[Dominion.Woodcutter()]*10
 box["Smithy"]=[Dominion.Smithy()]*10
@@ -53,20 +60,29 @@ box["Spy"]=[Dominion.Spy()]*10
 box["Thief"]=[Dominion.Thief()]*10
 box["Throne Room"]=[Dominion.Throne_Room()]*10
 
+
 supply_order = {0:['Curse','Copper'],2:['Estate','Cellar','Chapel','Moat'],
                 3:['Silver','Chancellor','Village','Woodcutter','Workshop'],
                 4:['Gardens','Bureaucrat','Feast','Militia','Moneylender','Remodel','Smithy','Spy','Thief','Throne Room'],
                 5:['Duchy','Market','Council Room','Festival','Laboratory','Library','Mine','Witch'],
                 6:['Gold','Adventurer'],8:['Province']}
-
+"""
 #Pick 10 cards from box to be in the supply.
 boxlist = [k for k in box]
 random.shuffle(boxlist)
 random10 = boxlist[:10]
 supply = defaultdict(list,[(k,box[k]) for k in random10])
 
+#Create a supply order based on card cost
+supply_order = testUtility.getSupplyOrder(testUtility.supply_cards, testUtility.action_cards)
+
 
 #The supply always has these cards
+base_supplies = testUtility.getSupplies(testUtility.supply_cards,nV,nC)
+for key in base_supplies:
+    value = base_supplies[key]
+    supply[key] = value
+"""
 supply["Copper"]=[Dominion.Copper()]*(60-len(player_names)*7)
 supply["Silver"]=[Dominion.Silver()]*40
 supply["Gold"]=[Dominion.Gold()]*30
@@ -74,7 +90,7 @@ supply["Estate"]=[Dominion.Estate()]*nV
 supply["Duchy"]=[Dominion.Duchy()]*nV
 supply["Province"]=[Dominion.Province()]*nV
 supply["Curse"]=[Dominion.Curse()]*nC
-
+"""
 #initialize the trash
 trash = []
 
