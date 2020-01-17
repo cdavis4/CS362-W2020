@@ -5,7 +5,12 @@ Created on Tue Oct 13 15:42:42 2015
 @author: tfleck
 """
 
-import Dominion
+#import Dominion file
+import importlib
+
+Dominion = importlib.import_module('Dominion')
+if Dominion is None:
+    print("can't find tbe Dominion module")
 import random
 from collections import defaultdict
 

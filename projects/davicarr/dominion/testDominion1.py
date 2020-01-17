@@ -21,7 +21,7 @@ from collections import defaultdict
 
 #Get player names
 #player_names = ["Annie","*Ben","*Carla"] 
-player_names = testUtility.getPlayerNames(testUtility.names)
+player_names = testUtility.getPlayerNames()
 
 #number of curses and victory cards
 if len(player_names)>2:
@@ -31,7 +31,7 @@ else:
 nC = -10 + 10 * len(player_names)
 
 #Define box
-box = testUtility.getBoxes(testUtility.action_cards)
+box = testUtility.getBoxes()
 """
 box = {}
 box["Woodcutter"]=[Dominion.Woodcutter()]*10
@@ -74,11 +74,11 @@ random10 = boxlist[:10]
 supply = defaultdict(list,[(k,box[k]) for k in random10])
 
 #Create a supply order based on card cost
-supply_order = testUtility.getSupplyOrder(testUtility.supply_cards, testUtility.action_cards)
+supply_order = testUtility.getSupplyOrder()
 
 
 #The supply always has these cards
-base_supplies = testUtility.getSupplies(testUtility.supply_cards,nV,nC)
+base_supplies = testUtility.getSupplies(nV,nC)
 for key in base_supplies:
     value = base_supplies[key]
     supply[key] = value

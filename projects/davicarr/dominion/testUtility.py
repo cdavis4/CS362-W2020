@@ -19,7 +19,7 @@ action_cards = ["Woodcutter","Smithy","Laboratory","Village","Festival","Market"
                 "Witch","Bureaucrat","Militia","Spy","Thief","Throne Room"]
 
 supply_cards = ["Copper","Silver","Gold","Estate","Duchy","Province","Curse"]
-#    def getSupply(self):
+
 
 names = ["Annie","*Ben","*Carla"]
 
@@ -33,15 +33,15 @@ class CardSet:
         return [self.card] * self.num
 
 #standalone scripts
-def getPlayerNames(names):
+def getPlayerNames():
     return names
 
-def getSupplies(cards_array,nV,nC):
+def getSupplies(nV,nC):
     supplies = {}
-    for card in cards_array:
+    for card in supply_cards:
         if card is "Copper":
             #Aware if a card has a space in name will fail
-            players = getPlayerNames(names)
+            players = getPlayerNames()
             player_number = len(players)
             value = 60-player_number * 7
             supplies[card] = CardSet(card,value).getSet()
@@ -53,17 +53,13 @@ def getSupplies(cards_array,nV,nC):
             supplies[card] = CardSet(card, nC).getSet()
         else:
             supplies[card] = CardSet(card, nV).getSet()
-    print (supplies)
     return supplies
 
 def defineCostArray(array,cost,value,card_name):
     if cost == value:
         array.append(card_name)
 
-
-
-
-def getSupplyOrder(cardarray1,cardarray2):
+def getSupplyOrder():
     cost_dict = {}
     zero= []
     two = []
@@ -72,7 +68,7 @@ def getSupplyOrder(cardarray1,cardarray2):
     five = []
     six = []
     eight = []
-    complete_list = cardarray1 + cardarray2
+    complete_list = supply_cards + action_cards
     for type in complete_list:
         type_function = type.replace(" ", "_")
         card = getattr(Dominion,type_function)()
@@ -97,17 +93,13 @@ def getSupplyOrder(cardarray1,cardarray2):
     return cost_dict
 
 
-def getBoxes(cards_array):
+def getBoxes():
     box = {}
-    for card in cards_array:
+    for card in action_cards:
         card_function = card.replace(" ","_")
         box[card] = CardSet(card_function, 10).getSet()
     return box
 
 
-
-if __name__ == "__main__":
-    #box = Box("Woodcutter",10).getBox()
-    getSupplies(supply_cards,8,30)
 
 
