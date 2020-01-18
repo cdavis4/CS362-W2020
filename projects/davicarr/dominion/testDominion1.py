@@ -32,7 +32,7 @@ nC = -10 + 10 * len(player_names)
 #Define box
 box = testUtility.getBoxes()
 
-#Bug introduced by setting 'Cellar'
+#Bug introduced by setting 'Cellar' to 'Mine'
 # card set be of the instead
 box["Cellar"]=[Dominion.Mine()]*10
 
